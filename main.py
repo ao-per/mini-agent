@@ -1,30 +1,30 @@
-from openai import OpenAI
+from agent import Agent
+from model_client import ModelClient
+from registry import ToolRegistry
+from tools.calculator import CalculatorTool
+from tools.current_time import CurrentTimeTool
+from tools.search_notes import SearchNotesTool
 
-from config import settings
+
+def create_registry() -> ToolRegistry:
+    registry = ToolRegistry()
+    registry.register(CalculatorTool())
+    registry.register(CurrentTimeTool())
+    registry.register(SearchNotesTool())
+    return registry
 
 
 def main() -> None:
-    client = OpenAI(
-        api_key=settings.api_key,
-        base_url=settings.base_url,
+    agent = Agent(
+        model_client=ModelClient(),
+        registry=create_registry(),
+        max_steps=8,
     )
 
-    response = client.chat.completions.create(
-        model=settings.model,
-        messages=[
-            {
-                "role": "system",
-                "content": "你是一个简洁、可靠的AI助手。",
-            },
-            {
-                "role": "user",
-                "content": "请用一句话解释什么是AI Agent。",
-            },
-        ],
-        temperature=0.6,
-    )
+    user_input = input("You: ")
+    answer = agent.run(user_input)
 
-    print(response.choices[0].message.content)
+    print(f"Agent: {answer}")
 
 
 if __name__ == "__main__":
