@@ -12,6 +12,26 @@ dependencies = [
     "tzdata>=2026.3",
 ]
 
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = [
+    "agent",
+    "cli",
+    "config",
+    "conversation",
+    "logging_config",
+    "main",
+    "model_client",
+    "registry",
+]
+packages = ["evals", "tools"]
+
+[tool.setuptools.package-data]
+evals = ["cases.json"]
+
 [dependency-groups]
 dev = [
     "pytest>=8.4.2",
